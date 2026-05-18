@@ -23,6 +23,7 @@ export default function App() {
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
   const preferredVoiceRef = useRef(null);
+  const pendingVoiceWindowRef = useRef(null);
   const voiceEnabledRef = useRef(false);
   const awaitingCommandRef = useRef(false);
 
@@ -99,7 +100,10 @@ export default function App() {
       setAwaitingCommand(false);
       awaitingCommandRef.current = false;
       setStatus(`Command: ${transcript}`);
-      await sendTextMessage(transcript);
+      if (lower.startsWith("play ")) {
+        pendingVoiceWindowRef.current = window.open("", "_blank");
+      }
+      await sendTextMessage(transcript, { fromVoice: true });
     };
 
     recognitionRef.current = recognition;
@@ -133,7 +137,7 @@ export default function App() {
     speechSynthesis.speak(utterance);
   }
 
-  async function sendTextMessage(text) {
+  async function sendTextMessage(text, options = {}) {
     const trimmed = text.trim();
     if (!trimmed || isLoading) return;
 
@@ -164,10 +168,18 @@ export default function App() {
         { id: crypto.randomUUID(), role: "assistant", text: data.reply },
       ]);
       if (data.action?.type === "open_url" && data.action.url) {
-        const openedWindow = window.open(data.action.url, "_blank", "noopener,noreferrer");
-        if (!openedWindow) {
-          window.location.assign(data.action.url);
+        if (options.fromVoice && pendingVoiceWindowRef.current) {
+          pendingVoiceWindowRef.current.location.href = data.action.url;
+          pendingVoiceWindowRef.current = null;
+        } else {
+          const openedWindow = window.open(data.action.url, "_blank", "noopener,noreferrer");
+          if (!openedWindow) {
+            window.location.assign(data.action.url);
+          }
         }
+      } else if (options.fromVoice && pendingVoiceWindowRef.current) {
+        pendingVoiceWindowRef.current.close();
+        pendingVoiceWindowRef.current = null;
       }
       speak(data.reply, () => {
         if (trimmed.toLowerCase().includes("goodbye") || trimmed.toLowerCase().includes("bye")) {
@@ -177,6 +189,10 @@ export default function App() {
         }
       });
     } catch (error) {
+      if (options.fromVoice && pendingVoiceWindowRef.current) {
+        pendingVoiceWindowRef.current.close();
+        pendingVoiceWindowRef.current = null;
+      }
       const reply = `Signal lost: ${error.message}`;
       setMessages((current) => [
         ...current,
