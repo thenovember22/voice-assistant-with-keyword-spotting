@@ -125,7 +125,8 @@ if __name__ == "__main__":
                 speak("Yes Bhargav?")
                 print("lily activated...")
                 with sr.Microphone() as source:
-                    recognizer.adjust_for_ambient_noise(source)                    audio = recognizer.listen(source, timeout=6, phrase_time_limit=5)
+                    recognizer.adjust_for_ambient_noise(source)
+                    audio = recognizer.listen(source, timeout=6, phrase_time_limit=5)
                 command = recognizer.recognize_google(audio)
                 print("Command:", command)
                 processCommand(command)
