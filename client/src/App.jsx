@@ -23,7 +23,6 @@ export default function App() {
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
   const preferredVoiceRef = useRef(null);
-  const pendingVoiceWindowRef = useRef(null);
   const voiceEnabledRef = useRef(false);
   const awaitingCommandRef = useRef(false);
 
@@ -100,10 +99,7 @@ export default function App() {
       setAwaitingCommand(false);
       awaitingCommandRef.current = false;
       setStatus(`Command: ${transcript}`);
-      if (lower.startsWith("play ")) {
-        pendingVoiceWindowRef.current = window.open("", "_blank");
-      }
-      await sendTextMessage(transcript, { fromVoice: true });
+      await sendTextMessage(transcript);
     };
 
     recognitionRef.current = recognition;
@@ -137,7 +133,7 @@ export default function App() {
     speechSynthesis.speak(utterance);
   }
 
-  async function sendTextMessage(text, options = {}) {
+  async function sendTextMessage(text) {
     const trimmed = text.trim();
     if (!trimmed || isLoading) return;
 
@@ -168,15 +164,7 @@ export default function App() {
         { id: crypto.randomUUID(), role: "assistant", text: data.reply },
       ]);
       if (data.action?.type === "open_url" && data.action.url) {
-        if (options.fromVoice && pendingVoiceWindowRef.current) {
-          pendingVoiceWindowRef.current.location.href = data.action.url;
-          pendingVoiceWindowRef.current = null;
-        } else {
-          window.open(data.action.url, "_blank", "noopener,noreferrer");
-        }
-      } else if (options.fromVoice && pendingVoiceWindowRef.current) {
-        pendingVoiceWindowRef.current.close();
-        pendingVoiceWindowRef.current = null;
+        window.open(data.action.url, "lilly-music");
       }
       speak(data.reply, () => {
         if (trimmed.toLowerCase().includes("goodbye") || trimmed.toLowerCase().includes("bye")) {
@@ -186,10 +174,6 @@ export default function App() {
         }
       });
     } catch (error) {
-      if (options.fromVoice && pendingVoiceWindowRef.current) {
-        pendingVoiceWindowRef.current.close();
-        pendingVoiceWindowRef.current = null;
-      }
       const reply = `Signal lost: ${error.message}`;
       setMessages((current) => [
         ...current,
