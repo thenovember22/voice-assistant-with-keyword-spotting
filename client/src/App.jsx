@@ -172,10 +172,7 @@ export default function App() {
           pendingVoiceWindowRef.current.location.href = data.action.url;
           pendingVoiceWindowRef.current = null;
         } else {
-          const openedWindow = window.open(data.action.url, "_blank", "noopener,noreferrer");
-          if (!openedWindow) {
-            window.location.assign(data.action.url);
-          }
+          window.open(data.action.url, "_blank", "noopener,noreferrer");
         }
       } else if (options.fromVoice && pendingVoiceWindowRef.current) {
         pendingVoiceWindowRef.current.close();
