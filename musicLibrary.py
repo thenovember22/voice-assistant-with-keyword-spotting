@@ -6,5 +6,15 @@ music = {
 }
 
 
+def normalize_song_name(song_name: str) -> str:
+    import unicodedata
+
+    normalized = unicodedata.normalize("NFKD", song_name.casefold())
+    without_accents = "".join(
+        char for char in normalized if not unicodedata.combining(char)
+    )
+    return " ".join(without_accents.strip().split())
+
+
 def get_song_link(song_name: str):
-    return music.get(song_name.strip().lower())
+    return music.get(normalize_song_name(song_name))

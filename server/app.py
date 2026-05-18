@@ -26,7 +26,7 @@ def generate_response(message: str) -> dict:
         current_time = datetime.now(ist).strftime("%I:%M %p")
         return {"reply": f"The time is {current_time}."}
     if normalized.startswith("play"):
-        song = normalized.replace("play", "", 1).strip()
+        song = musicLibrary.normalize_song_name(normalized.replace("play", "", 1))
         link = musicLibrary.get_song_link(song)
         if link:
             return {
