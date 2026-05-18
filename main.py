@@ -81,7 +81,9 @@ def processCommand(cmd):
     elif cmd.startswith("play"):
         try:
             song = cmd.replace("play", "").strip()
-            link = musicLibrary.music[song]
+            link = musicLibrary.get_song_link(song)
+            if not link:
+                raise KeyError(song)
             speak(f"Playing {song}")
             webbrowser.open(link)
         except:
