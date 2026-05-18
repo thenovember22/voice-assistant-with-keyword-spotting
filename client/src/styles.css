@@ -22,6 +22,7 @@ body {
 
 .app-shell {
   display: flex;
+  min-height: 100dvh;
   height: 100vh;
   overflow: hidden;
   background: #0a0a0a;
@@ -328,6 +329,24 @@ body {
   }
 }
 
+@media (max-width: 1100px) {
+  .agent-panel {
+    width: 42%;
+  }
+
+  .chat-panel {
+    width: 58%;
+  }
+
+  .messages {
+    padding: 24px;
+  }
+
+  .composer {
+    padding: 18px 24px 22px;
+  }
+}
+
 @media (max-width: 820px) {
   .app-shell {
     flex-direction: column;
@@ -339,12 +358,13 @@ body {
   }
 
   .agent-panel {
-    height: 38vh;
-    min-height: 280px;
+    height: 40dvh;
+    min-height: 260px;
+    gap: 14px;
   }
 
   .chat-panel {
-    height: 62vh;
+    height: 60dvh;
     border-left: none;
     border-top: 1px solid rgba(0, 255, 65, 0.18);
   }
@@ -376,5 +396,155 @@ body {
 
   .message {
     max-width: 88%;
+  }
+}
+
+@media (max-width: 600px) {
+  .app-shell {
+    min-height: 100dvh;
+  }
+
+  .agent-panel {
+    height: 36dvh;
+    min-height: 220px;
+    gap: 10px;
+  }
+
+  .chat-panel {
+    height: 64dvh;
+  }
+
+  .avatar-wrap {
+    width: 160px;
+    height: 160px;
+  }
+
+  .orbit-one {
+    width: 116px;
+    height: 116px;
+  }
+
+  .orbit-two {
+    width: 138px;
+    height: 138px;
+  }
+
+  .orbit-three {
+    width: 160px;
+    height: 160px;
+  }
+
+  .core-orb {
+    width: 82px;
+    height: 82px;
+  }
+
+  .agent-panel h1 {
+    font-size: 1.8rem;
+    letter-spacing: 0.24rem;
+  }
+
+  .agent-panel p {
+    font-size: 0.78rem;
+    letter-spacing: 0.14rem;
+  }
+
+  .voice-controls button {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
+
+  .chat-header {
+    gap: 12px;
+    padding: 16px 18px;
+  }
+
+  .chat-header h2 {
+    font-size: 1.2rem;
+  }
+
+  .chat-header p {
+    font-size: 0.82rem;
+  }
+
+  .messages {
+    gap: 12px;
+    padding: 18px;
+  }
+
+  .message {
+    max-width: 92%;
+    padding: 12px 14px;
+    font-size: 0.92rem;
+  }
+
+  .composer {
+    gap: 10px;
+    padding: 14px 18px 18px;
+  }
+
+  .composer input {
+    min-width: 0;
+    padding: 14px 15px;
+    font-size: 0.92rem;
+  }
+
+  .composer button {
+    padding: 0 16px;
+    font-size: 0.92rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .composer {
+    flex-direction: column;
+  }
+
+  .composer button {
+    min-height: 46px;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 560px) {
+  .app-shell {
+    flex-direction: row;
+  }
+
+  .agent-panel {
+    width: 38%;
+    height: 100dvh;
+    min-height: 0;
+  }
+
+  .chat-panel {
+    width: 62%;
+    height: 100dvh;
+    border-top: none;
+    border-left: 1px solid rgba(0, 255, 65, 0.18);
+  }
+
+  .avatar-wrap {
+    width: 150px;
+    height: 150px;
+  }
+
+  .orbit-one {
+    width: 108px;
+    height: 108px;
+  }
+
+  .orbit-two {
+    width: 130px;
+    height: 130px;
+  }
+
+  .orbit-three {
+    width: 150px;
+    height: 150px;
+  }
+
+  .core-orb {
+    width: 76px;
+    height: 76px;
   }
 }
