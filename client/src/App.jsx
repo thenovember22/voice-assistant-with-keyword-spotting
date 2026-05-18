@@ -164,7 +164,10 @@ export default function App() {
         { id: crypto.randomUUID(), role: "assistant", text: data.reply },
       ]);
       if (data.action?.type === "open_url" && data.action.url) {
-        window.open(data.action.url, "_blank", "noopener,noreferrer");
+        const openedWindow = window.open(data.action.url, "_blank", "noopener,noreferrer");
+        if (!openedWindow) {
+          window.location.assign(data.action.url);
+        }
       }
       speak(data.reply, () => {
         if (trimmed.toLowerCase().includes("goodbye") || trimmed.toLowerCase().includes("bye")) {
