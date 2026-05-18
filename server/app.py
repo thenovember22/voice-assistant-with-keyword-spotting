@@ -3,6 +3,7 @@ from pathlib import Path
 import sys
 import re
 
+from flask_cors import CORS
 from flask import Flask, jsonify, request
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
@@ -12,6 +13,7 @@ import musicLibrary
 
 
 app = Flask(__name__)
+CORS(app)
 
 
 def generate_response(message: str) -> dict:

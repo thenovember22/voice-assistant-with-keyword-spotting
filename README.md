@@ -1,17 +1,10 @@
 # Lilly - AI Voice Assistant
 
-A single-page React + Flask chat app with a dark sci-fi interface and a local demo backend.
+A single-page React + Flask voice assistant with wake-word flow, calculator support, and music commands.
 
-## Project structure
+## Local setup
 
-```text
-/client  -> React + Vite frontend
-/server  -> Flask backend
-```
-
-## Setup
-
-### 1. Backend
+### Backend
 
 ```powershell
 cd server
@@ -21,9 +14,7 @@ pip install -r requirements.txt
 python app.py
 ```
 
-The API runs at `http://127.0.0.1:5000`.
-
-### 2. Frontend
+### Frontend
 
 Open a second terminal:
 
@@ -33,14 +24,60 @@ npm install
 npm run dev
 ```
 
-Open the local URL printed by Vite, usually `http://127.0.0.1:5173`.
+## Deploy on Render
 
-## Features
+This repo is a monorepo with two deployable apps:
 
-- Full-screen two-panel layout
-- Animated Lilly avatar with orbiting particles
-- React chat history with loading indicator
-- Enter-to-send behavior
-- Auto-scroll to the newest message
-- Mobile layout that stacks avatar above chat
-- No API key or `.env` file required
+```text
+/server  -> Flask API
+/client  -> React/Vite frontend
+```
+
+### 1. Push the project to GitHub
+
+Render deploys from a linked Git repo, so commit and push the project first.
+
+### 2. Create the Flask backend service
+
+In Render:
+
+1. Click `New` -> `Web Service`
+2. Connect your GitHub repo
+3. Set `Root Directory` to `server`
+4. Use:
+   - Runtime: `Python 3`
+   - Build Command: `pip install -r requirements.txt`
+   - Start Command: `gunicorn app:app`
+5. Deploy it
+
+After deploy, copy the backend URL, for example:
+
+```text
+https://lilly-backend.onrender.com
+```
+
+### 3. Create the frontend static site
+
+In Render:
+
+1. Click `New` -> `Static Site`
+2. Connect the same repo
+3. Set `Root Directory` to `client`
+4. Use:
+   - Build Command: `npm install && npm run build`
+   - Publish Directory: `dist`
+5. Add environment variable:
+
+```text
+VITE_API_BASE_URL=https://your-backend-name.onrender.com
+```
+
+6. Deploy it
+
+Your public résumé link will be the frontend static-site URL.
+
+## Notes
+
+- Open the deployed frontend over HTTPS and click `Start Voice Mode` once so the browser can request microphone/audio permission.
+- After that: say `Lilly`, then commands like `what is the time`, `what is 12 times 5`, `play senorita`, or `goodbye`.
+- `client/.env.example` shows the production frontend environment variable you need on Render.

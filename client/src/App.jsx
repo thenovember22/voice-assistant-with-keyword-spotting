@@ -10,6 +10,7 @@ const initialMessages = [
 
 const SpeechRecognition =
   window.SpeechRecognition || window.webkitSpeechRecognition;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
 
 export default function App() {
   const [messages, setMessages] = useState(initialMessages);
@@ -147,7 +148,7 @@ export default function App() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/chat", {
+      const response = await fetch(`${API_BASE_URL}/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: trimmed }),
