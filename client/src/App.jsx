@@ -4,7 +4,7 @@ const initialMessages = [
   {
     id: "welcome",
     role: "assistant",
-    text: "Hi Bhargav. Press Start Voice Mode, then say 'Lilly' to activate me.",
+    text: "Hi Bhargav. Press Start Voice Mode, then say 'Maya' to activate me.",
   },
 ];
 
@@ -87,10 +87,10 @@ export default function App() {
       if (!awaitingCommandRef.current) {
         setStatus(`Heard: ${transcript}`);
 
-        if (lower.includes("lilly") || lower.includes("lily")) {
+        if (/\b(maya|maaya|mya)\b/.test(lower)) {
           setAwaitingCommand(true);
           awaitingCommandRef.current = true;
-          setStatus("Lilly activated. Waiting for command...");
+          setStatus("Maya activated. Waiting for command...");
           speak("Yes Bhargav?");
         }
         return;
@@ -153,10 +153,23 @@ export default function App() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: trimmed }),
       });
-      const data = await response.json();
+      const rawBody = await response.text();
+      let data = {};
+
+      try {
+        data = rawBody ? JSON.parse(rawBody) : {};
+      } catch {
+        throw new Error(
+          `Server returned a non-JSON response (${response.status}). Check the backend URL or Render logs.`,
+        );
+      }
 
       if (!response.ok) {
-        throw new Error(data.error || "Request failed");
+        throw new Error(data.error || `Request failed with status ${response.status}`);
+      }
+
+      if (!data.reply) {
+        throw new Error("Server returned no reply.");
       }
 
       setMessages((current) => [
@@ -164,7 +177,7 @@ export default function App() {
         { id: crypto.randomUUID(), role: "assistant", text: data.reply },
       ]);
       if (data.action?.type === "open_url" && data.action.url) {
-        window.open(data.action.url, "lilly-music");
+        window.open(data.action.url, "maya-music");
       }
       speak(data.reply, () => {
         if (trimmed.toLowerCase().includes("goodbye") || trimmed.toLowerCase().includes("bye")) {
@@ -199,7 +212,7 @@ export default function App() {
     setVoiceEnabled(true);
     voiceEnabledRef.current = true;
     setStatus("Listening for wake word...");
-    speak("Hi Bhargav. Say Lilly to activate me.");
+    speak("Hi Bhargav. Say Maya to activate me.");
   }
 
   function stopVoiceMode() {
@@ -227,7 +240,7 @@ export default function App() {
           </div>
           <div className={`core-orb ${isListening ? "listening" : ""}`} />
         </div>
-        <h1>LILLY</h1>
+        <h1>MAYA</h1>
         <p>AI VOICE ASSISTANT</p>
         <div className="voice-controls">
           {!voiceEnabled ? (
@@ -242,7 +255,7 @@ export default function App() {
         <header className="chat-header">
           <span className={`status-dot ${isListening ? "active" : ""}`} />
           <div>
-            <h2>Lilly Console</h2>
+            <h2>Maya Console</h2>
             <p>{status}</p>
           </div>
         </header>
@@ -258,7 +271,7 @@ export default function App() {
           ))}
 
           {isLoading && (
-            <article className="message assistant loading" aria-label="Lilly is typing">
+            <article className="message assistant loading" aria-label="Maya is typing">
               <span />
               <span />
               <span />
@@ -272,8 +285,8 @@ export default function App() {
           <input
             value={input}
             onChange={(event) => setInput(event.target.value)}
-            placeholder="Speak or type to Lilly..."
-            aria-label="Message Lilly"
+            placeholder="Speak or type to Maya..."
+            aria-label="Message Maya"
           />
           <button type="submit" disabled={!input.trim() || isLoading}>
             Send

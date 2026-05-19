@@ -10,6 +10,7 @@ sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 import calculator
 import musicLibrary
+from ai_service import ask_ai
 
 
 app = Flask(__name__)
@@ -34,23 +35,21 @@ def generate_response(message: str) -> dict:
                 "action": {"type": "open_url", "url": link},
             }
         return {"reply": "I cannot find that song in your library."}
-    if "calculate" in normalized or "what is" in normalized:
+    if calculator.looks_like_math(message):
         return {"reply": calculator.calculate(message)}
     if any(greeting in normalized for greeting in ("hello", "hi", "hey")):
-        return {"reply": "Hello Bhargav. Lilly is online and listening."}
+        return {"reply": "Hello Bhargav. Maya is online and listening."}
     if "who are you" in normalized:
         return {
-            "reply": "I'm Lilly, your AI voice assistant interface. Sharp edges, green glow, and useful answers."
+            "reply": "I'm Maya, your AI voice assistant interface. Sharp edges, green glow, and useful answers."
         }
     if "thank" in normalized:
         return {"reply": "You're welcome. Keep going."}
 
-    return {
-        "reply": (
-            "I heard you. Right now I can answer time, calculator, music, and goodbye commands. "
-            "We can add more of your desktop assistant commands next."
-        )
-    }
+    # ---------- AI fallback ----------
+    # If the command is not one of Maya's built-in actions,
+    # send it to Groq for a general answer.
+    return {"reply": ask_ai(message)}
 
 
 @app.post("/api/chat")

@@ -1,20 +1,17 @@
 import speech_recognition as sr
 import webbrowser
 import requests
-import google.generativeai as genai
 from gtts import gTTS
 import pygame
 import os
 import musicLibrary
 import calculator
 import timeModule  # <-- NEW TIME MODULE
+from ai_service import ask_ai
 # -------------------------------------------------------
 # CONFIG
 # -------------------------------------------------------
-GEMINI_KEY = "YOUR_GEMINI_KEY"
 NEWS_KEY = "YOUR_NEWS_API_KEY"
-genai.configure(api_key=GEMINI_KEY)
-model = genai.GenerativeModel("gemini-1.5-flash")
 # -------------------------------------------------------
 # SPEECH OUTPUT
 # -------------------------------------------------------
@@ -32,15 +29,10 @@ def speak(text):
     except Exception as e:
         print("Speak Error:", e)
 # -------------------------------------------------------
-# GEMINI AI RESPONSE
+# GROQ AI RESPONSE
 # -------------------------------------------------------
 def aiProcess(command):
-    try:
-        response = model.generate_content(command)
-        return response.text
-    except Exception as e:
-        print("Gemini Error:", e)
-        return "I couldn't reach the Gemini servers."
+    return ask_ai(command)
 # -------------------------------------------------------
 # COMMAND HANDLER
 # -------------------------------------------------------
@@ -56,7 +48,7 @@ def processCommand(cmd):
         speak(current_time)
         return
     # ---------- Calculator ----------
-    if "calculate" in cmd or "what is" in cmd:
+    if calculator.looks_like_math(cmd):
         answer = calculator.calculate(cmd)
         speak(answer)
         return
@@ -114,7 +106,7 @@ def processCommand(cmd):
 # -------------------------------------------------------
 if __name__ == "__main__":
     recognizer = sr.Recognizer()
-    speak("Hi Bhargav. Say 'lily' to activate me.")
+    speak("Hi Bhargav. Say 'Maya' to activate me.")
     while True:
         try:
             with sr.Microphone() as source:
@@ -123,9 +115,9 @@ if __name__ == "__main__":
                 audio = recognizer.listen(source, timeout=5, phrase_time_limit=2)
             text = recognizer.recognize_google(audio).lower()
             print("Heard:", text)
-            if "lily" in text:
+            if "maya" in text or "maaya" in text or "mya" in text:
                 speak("Yes Bhargav?")
-                print("lily activated...")
+                print("Maya activated...")
                 with sr.Microphone() as source:
                     recognizer.adjust_for_ambient_noise(source)
                     audio = recognizer.listen(source, timeout=6, phrase_time_limit=5)

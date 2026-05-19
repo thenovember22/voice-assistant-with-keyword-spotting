@@ -1,6 +1,33 @@
 # calculator.py
 import re
 import ast
+
+
+def looks_like_math(expression: str) -> bool:
+    if not expression or not isinstance(expression, str):
+        return False
+
+    lowered = expression.lower()
+    has_number = bool(re.search(r"\d", lowered))
+    has_operator = any(
+        token in lowered
+        for token in (
+            " plus ",
+            " minus ",
+            " times ",
+            " multiplied by ",
+            " multiply ",
+            " divided by ",
+            " over ",
+            " into ",
+            "+",
+            "-",
+            "*",
+            "/",
+            " x ",
+        )
+    )
+    return "calculate" in lowered or (has_number and has_operator)
 def _safe_eval(expression: str):
     """
     Safely evaluate a math expression constructed from numbers and + - * / and parentheses.

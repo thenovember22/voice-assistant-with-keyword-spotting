@@ -1,4 +1,4 @@
-# Lilly - AI Voice Assistant
+# Maya - AI Voice Assistant
 
 A single-page React + Flask voice assistant with wake-word flow, calculator support, and music commands.
 
@@ -12,6 +12,12 @@ python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 python app.py
+```
+
+Create a `.env` file in the project root:
+
+```env
+GROQ_API_KEY=your_real_groq_api_key_here
 ```
 
 ### Frontend
@@ -48,12 +54,18 @@ In Render:
    - Runtime: `Python 3`
    - Build Command: `pip install -r requirements.txt`
    - Start Command: `gunicorn app:app`
-5. Deploy it
+5. Add environment variable:
+
+```text
+GROQ_API_KEY=your_real_groq_api_key_here
+```
+
+6. Deploy it
 
 After deploy, copy the backend URL, for example:
 
 ```text
-https://lilly-backend.onrender.com
+https://maya-backend.onrender.com
 ```
 
 ### 3. Create the frontend static site
@@ -79,5 +91,6 @@ Your public résumé link will be the frontend static-site URL.
 ## Notes
 
 - Open the deployed frontend over HTTPS and click `Start Voice Mode` once so the browser can request microphone/audio permission.
-- After that: say `Lilly`, then commands like `what is the time`, `what is 12 times 5`, `play senorita`, or `goodbye`.
+- After that: say `Maya`, then commands like `what is the time`, `what is 12 times 5`, `play senorita`, or `goodbye`.
+- If a command is not one of Maya's built-in actions, it is sent to Groq for a general answer.
 - `client/.env.example` shows the production frontend environment variable you need on Render.
